@@ -1,0 +1,2 @@
+# GithubWebhookGo
+使用go语言去接收github发送的webhook数据
