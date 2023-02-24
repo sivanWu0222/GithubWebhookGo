@@ -36,8 +36,25 @@ func verifySignature(signature string, data string, secret string) bool {
 	return signature == generateHashSignature(data, secret)
 }
 
-func executeAutoDeployScript() bool {
-	cmd := exec.Command("./auto_deploy.sh")
+func executeAutoDeployScript(projectNameParam string) bool {
+	var projectName string
+	switch projectNameParam {
+	// 如果部署的是博客
+	case "blog":
+		projectName = "blog"
+	// 如果部署的是简历网站
+	case "resume":
+		projectName = "resume"
+	// 如果部署的是我们的算法网站
+	case "algo":
+		projectName = "algo"
+	// 如果部署的是面试的基础知识网站
+	case "basic":
+		projectName = "basic"
+	}
+
+	cmd := exec.Command(fmt.Sprintf("./auto_deploy.sh %s", projectName))
+
 	if err := cmd.Run(); err != nil {
 		return false
 	}
@@ -59,7 +76,10 @@ func processWebhookFromGithub(c *gin.Context) {
 	})
 	if verifySignature(receivedSignature, string(body), secret_token) {
 
-		if executeAutoDeployScript() {
+		// 获取项目名字
+		projectNameParam := c.Request.Body
+
+		if executeAutoDeployScript(projectNameParam) {
 			c.String(http.StatusOK, "部署成功")
 		} else {
 			c.String(http.StatusOK, "鉴权成功但部署失败")
@@ -70,6 +90,17 @@ func processWebhookFromGithub(c *gin.Context) {
 }
 
 func main() {
-	r.POST("/acceptWebHook", processWebhookFromGithub)
-	r.Run("0.0.0.0:8900")
+	// r.POST("/acceptWebHook", processWebhookFromGithub)
+	// r.Run("0.0.0.0:8900")
+
+	name := "3"
+
+	switch name {
+	case "1":
+		fmt.Println("1")
+	case "2":
+		fmt.Println("2")
+	case "3":
+		fmt.Println("3")
+	}
 }
