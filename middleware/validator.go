@@ -5,11 +5,13 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"io"
+	"log"
 	"net/http"
 	"os"
 	"strings"
+
+	"github.com/gin-gonic/gin"
 )
 
 var secretToken string
@@ -54,7 +56,8 @@ func VerifyGithubWebhookSignature() gin.HandlerFunc {
 		body, _ := io.ReadAll(c.Request.Body)
 
 		if !verifySignature(receivedSignature, string(body), secretToken) {
-			c.String(http.StatusUnauthorized, fmt.Sprintf("%s,%s,%s,%s", c.Request.Header.Get("X-Hub-Signature-256"), receivedSignature, secretToken, string(body)))
+			log.Println(fmt.Sprintf("{X-Hub-Signature-256: \"%s\", receivedSignature: \"%s\", token: \"%s\", body: \"%s\"}", c.Request.Header.Get("X-Hub-Signature-256"), receivedSignature, secretToken, string(body)))
+			c.String(http.StatusUnauthorized, "鉴权失败,请重试")
 			c.Abort()
 			return
 		}
