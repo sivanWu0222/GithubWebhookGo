@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/gin-gonic/gin"
+
 	"github.com/sivanWu0222/GithubWebhookGo/conf"
 	"github.com/sivanWu0222/GithubWebhookGo/handler"
 	"github.com/sivanWu0222/GithubWebhookGo/middleware"
